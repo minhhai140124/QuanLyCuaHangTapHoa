@@ -1,0 +1,83 @@
+﻿@model IEnumerable<QuanLyCuaHangTapHoa.Models.NhanVien>
+
+@{
+    ViewBag.Title = "Quản Lí Nhân Viên";
+    Layout = "~/Views/Shared/_layoutadmin.cshtml";
+}
+
+<div class="app-title">
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item active"><a href="#"><b>Danh sách nhân viên</b></a></li>
+    </ul>
+    <div id="clock"></div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+            <div class="tile-body">
+                <div class="row">
+                    <table class="table table-hover table-bordered js-copytextarea" cellpadding="0" cellspacing="0" border="0"
+                           id="sampleTable">
+                        <thead>
+                            <tr class="label">
+                                <th>ID</th>
+                                <th>Họ và tên</th>
+                                <th>Ảnh thẻ</th>
+                                <th>Địa chỉ</th>
+                                <th>Giới tính</th>
+                                <th>SĐT</th>
+                                <th>Chức vụ</th>
+                                <th>Tính năng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.FullName</td>
+                                    <td>
+                                        @if (item.Picture == null)
+                                        {
+                                            <img src="~/Hinh/user.jpg" alt="Image" width="100" height="100" />
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Hinh/NhanVien/@Url.Content(item.Picture)" alt="Image" width="100" height="100" />
+                                        }
+                                    </td>
+                                    <td>@item.Address </td>
+                                    <td>@(item.Sex == true ? "Nam" : "Nữ")</td>
+                                    <td>@item.Sdt</td>
+                                    <td>@item.ChucVu.ChucVu1</td>
+                                    <td class="table-td-center">
+                                        <button class="btn btn-primary btn-sm trash" type="button" title="Xóa">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-primary btn-sm user-btn" type="button" title="Xem thông tin">
+                                            <i class="fas fa-user"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    tr.label th {
+        text-align: center;
+    }
+
+    td img {
+        object-fit: cover
+    }
+</style>

@@ -1,0 +1,159 @@
+﻿@using QuanLyCuaHangTapHoa.Models
+@model List<Giohang>
+@{
+    ViewBag.Title = "Giỏ hàng";
+    Layout = "";
+    Layout = "~/Views/Shared/_layoutadmin.cshtml";
+    quantaphoaEntities _db = new quantaphoaEntities();
+}
+
+<div class="grid">
+    <div class="cart app__content">
+        <div class="cart-list">
+            <div class="cart-list__header row">
+                <span class="grid-cart-column-6 cart-list__header-title">Sản phẩm</span>
+                <span class="grid-cart-column-1">Đơn giá</span>
+                <span class="grid-cart-column-1">Số lượng</span>
+                <span class="grid-cart-column-1">Số tiền</span>
+                <span class="grid-cart-column-1">Thao tác</span>
+            </div>
+            <hr>
+            <div class="cart-list__body">
+                @if (Session["Giohang"] != null && Model.Count != 0)
+                {
+                    foreach (var item in Model)
+                    {
+                        using (Html.BeginForm("Capnhatgiohang", "Giohang", new { @IdProduct = item.IdProduct }))
+                        {
+                            <div class="cart-list__product row">
+                                <div class="grid-cart-column-6 cart__product-item" style=" display: flex; flex-direction: column;">
+                                    <img src="~/Resources/Pictures/Products/@item.Picture" class="card-img-top" style="width:200px !important;" />
+                                    <span class="cart__product-name">@item.ProductName</span>
+                                </div>
+                                <span class="grid-cart-column-1" style=" margin-left: 80px; ">@string.Format("{0:#,0}", item.DonGia) ₫</span>
+                                <input class="grid-cart-column-1" type="number" min="1" name="txtSoLuong" value="@item.SoLuong" style="text-align: center; height: 23px; margin-left: 250px; margin-top: 55px; " />
+                                <span class="grid-cart-column-1" style=" margin-left: 210px; ">@string.Format("{0:#,0}", item.Price) ₫</span>
+                                <div class="grid-cart-column-1 cart__button" style=" display: flex; flex-direction: column; margin-left: 222px; ">
+                                    <a href="@Url.Action("Xoagiohang", "Giohang", new { Idproduct = item.IdProduct })" class="btn cart__button-delete btn--danger" style=" width: 100px; background-color: chartreuse;">Xóa</a>
+                                    <input type="submit" value="Cập nhật" class="btn cart__button-update btn--success" style=" width: 100px; background-color: chartreuse;" />
+                                </div>
+                            </div>
+                            <hr>
+                        }
+                    }
+                    <div class="cart-list__footer row" style="display: flex; justify-content: space-around;">
+                        <div class="grid-cart-column-6 cart__total">Tổng số lượng sản phẩm: @ViewBag.Tongsoluong</div>
+                        <span class="grid-cart-column-1"></span>
+                        <span class="grid-cart-column-1"></span>
+                        <span class="grid-cart-column-1">Tổng tiền: @String.Format("{0:#,0}", ViewBag.Tongtien) ₫</span>
+                        <div class="grid-cart-column-1 cart__button">
+                            @Html.ActionLink("Xóa giỏ hàng", "DeleteAll", "GioHang", new { @class = "btn cart__button-deleteAll btn--danger" })
+                            @Html.ActionLink("Đặt hàng", "DatHang", "GioHang", new { @class = "btn cart__button-order" })
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="cart-list__product row">
+                        <div class="grid-cart-column-6 cart__product-item">
+                            <span class="cart__product-name">Chưa có sản phẩm nào trong hóa đơn</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+
+    .cart-list__header {
+        display: flex;
+        align-items: center;
+        background-color: #f8f9fa; /* Màu nền */
+        padding: 10px; /* Khoảng cách nội dung */
+        border-bottom: 1px solid #dee2e6; /* Viền dưới */
+        margin-bottom: 10px; /* Khoảng cách với phần nội dung khác */
+    }
+
+        .cart-list__header span {
+            flex: 1; /* Chia đều không gian giữa các cột */
+        }
+
+    .cart-list__product {
+        border-bottom: 1px solid #dee2e6; /* Viền dưới */
+        padding: 10px; /* Khoảng cách nội dung */
+    }
+
+        .cart-list__product .grid-cart-column-6 {
+            display: flex;
+            align-items: center;
+        }
+
+            .cart-list__product .grid-cart-column-6 .cart__product-item {
+                display: flex;
+                align-items: center;
+            }
+
+                .cart-list__product .grid-cart-column-6 .cart__product-item img {
+                    max-width: 80px; /* Độ rộng tối đa của ảnh */
+                    height: auto; /* Chiều cao tự động */
+                    margin-right: 10px; /* Khoảng cách với phần nội dung khác */
+                    border-radius: 4px; /* Bo góc */
+                }
+
+                .cart-list__product .grid-cart-column-6 .cart__product-item .cart__product-name {
+                    font-weight: bold; /* Đậm */
+                    margin-right: 10px; /* Khoảng cách với phần nội dung khác */
+                }
+
+        .cart-list__product .grid-cart-column-1 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-list__product input[type="number"] {
+            width: 60px; /* Độ rộng ô nhập số lượng */
+            text-align: center; /* Căn giữa nội dung */
+        }
+
+        .cart-list__product .cart__button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+    .cart-list__footer {
+        display: flex;
+        align-items: center;
+        background-color: #f8f9fa; /* Màu nền */
+        padding: 10px; /* Khoảng cách nội dung */
+        border-top: 1px solid #dee2e6; /* Viền trên */
+        margin-top: 10px; /* Khoảng cách với phần nội dung khác */
+    }
+
+        .cart-list__footer .grid-cart-column-6 {
+            font-weight: bold; /* Đậm */
+        }
+
+        .cart-list__footer .grid-cart-column-1 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-list__footer .cart__button {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end; /* Căn phải */
+        }
+
+    .cart-list__header {
+        display: flex;
+        align-items: center;
+    }
+
+        .cart-list__header span {
+            flex: 1; /* Distribute space evenly among spans */
+        }
+</style>

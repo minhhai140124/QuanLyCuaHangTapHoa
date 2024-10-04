@@ -1,0 +1,89 @@
+﻿@using QuanLyCuaHangTapHoa.Models;
+@model QuanLyCuaHangTapHoa.Models.Order
+
+@{
+    quantaphoaEntities _db = new quantaphoaEntities();
+    ViewBag.Title = "Chi tiết đơn hàng";
+    Layout = "~/Views/Shared/_layoutadmin.cshtml";
+    NhanVien kh = _db.NhanViens.Find(Model.NhanVien.Id);
+    NhanVien nvsession = (NhanVien)Session["NV"];
+    NhanVien nv = _db.NhanViens.Find(nvsession.Id);
+    Order orders = _db.Orders.Find(Model.ID);
+    List<Order_Detail> orderDetails = _db.Order_Detail.Where(od => od.ID_Order == orders.ID).ToList();
+}
+
+@using (Html.BeginForm("Edit", "Order", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.ID)
+<div class="row">
+    <div class="col-md-6">
+        <div class="tile">
+            <h3 class="tile-title">Thông tin đơn hàng #@Model.ID</h3>
+            <div class="du--lieu-san-pham">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="so--luong">Mã sản phẩm</th>
+                            <th class="so--luong">Tên sản phẩm</th>
+                            <th class="so--luong">Ảnh</th>
+                            <th class="so--luong">Số lượng</th>
+                            <th class="so--luong">Giá bán</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in orderDetails)
+                        {
+                            Product product = _db.Products.Find(item.ID_Product);
+                            if (product != null)
+                            {
+                                <tr>
+                                    <td>#@product.Id</td>
+                                    <td>@product.ProductName</td>
+                                    <td><img src="~/Resources/Pictures/Products/@product.Picture" alt="" width="50px"></td>
+                                    <td>@item.SoLuong</td>
+                                    <td>@string.Format("{0:#,0}", item.Price / item.SoLuong) đ</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5">Sản phẩm không tồn tại</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="alert">
+                @string.Format("{0:#,0}", orders.ThanhTien) đ
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="tile">
+            <div class="row">
+
+                <div class="form-group  col-md-12">
+                    <label class="control-label">Hình thức thanh toán</label>
+                    @if (orders.Payment == true)
+                    {
+                        <input class="form-control" type="text" value="Thanh toán qua cổng VNPAY" disabled>
+                    }
+                    else
+                    {
+                        <input class="form-control" type="text" value="Thanh Toán Bằng Tiền Mặt" disabled>
+                    }
+                </div>
+                <div class="form-group  col-md-12">
+                    <label class="control-label">Tổng cộng thanh toán: </label>
+                    <p class="control-all-money-total">= @string.Format("{0:#,0}", orders.ThanhTien) VNĐ</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+}

@@ -1,0 +1,183 @@
+﻿@using QuanLyCuaHangTapHoa.Models;
+@using PagedList.Mvc;
+@using QuanLyCuaHangTapHoa.Utils;
+@model PagedList.PagedList<QuanLyCuaHangTapHoa.Models.Product>
+
+@{
+    quantaphoaEntities _db = new quantaphoaEntities();
+    var dscata = _db.Catalogs.ToList();
+    ViewBag.Title = "Danh sách sản phẩm";
+    Layout = "~/Views/Shared/_layoutadmin.cshtml";
+    var currentSearch = ViewBag.searchStr;
+    var currentSort = ViewBag.Sort;
+    var totalPage = ViewBag.totalPage;
+    var dsProduct = ViewBag.products;
+    NhanVien nvSession = (NhanVien)Session["NV"];
+}
+
+<div class="app-title">
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item active"><a href="#"><b>Danh sách sản phẩm</b></a></li>
+    </ul>
+    <div id="clock"></div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+            <div class="tile-body">
+                <div class="row element-button">
+                    @if (nvSession.MaChucVu == 2)
+                    {
+                        <div class="col-sm-2">
+                            <a class="btn btn-add btn-sm" href="@Url.Action("Index","Catalog")">
+                                <i class="fas fa-folder-plus"></i> Danh sách danh mục
+                            </a>
+                        </div>
+                        <div class="col-sm-2">
+                            <a class="btn btn-delete print-file btn-sm" href="@Url.Action("Create","Product")">
+                                <i class="fas fa-plus"></i>
+                                Tạo mới sản phẩm
+                            </a>
+                        </div>
+                    }
+                    <div class="col-sm-2">
+                        <a class="btn btn-warning btn-sm" href="@Url.Action("Indexadminsp", "Product", new { sort = "pre-sold", searchString = ViewBag.searchStr, category = ViewBag.category })">
+                            Sắp hết hàng
+                        </a>
+                    </div>
+                    <div class="col-sm-2">
+                        <a class="btn btn-danger btn-sm" href="@Url.Action("Indexadminsp", "Product", new { sort = "sold", searchString = ViewBag.searchStr, category = ViewBag.category })">
+                            Hết hàng
+                        </a>
+                    </div>
+                    <div class="col-sm-2">
+                        <a class="btn btn-success btn-sm" href="@Url.Action("Indexadminsp", "Product", new { sort = "available", searchString = ViewBag.searchStr, category = ViewBag.category })">
+                            Còn hàng
+                        </a>
+                    </div>
+                    <div class="col-sm-2">
+                        <a class="btn btn-light btn-sm" href="@Url.Action("Indexadminsp", "Product", new { searchString = ViewBag.searchStr, category = ViewBag.category })">
+                            Mặc định
+                        </a>
+                    </div>
+                </div>
+                <div class="row" style="align-items:center">
+                    <div class="col-sm-12 col-md-6">
+                        <span>Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)/ @totalPage</span>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="row align-items-center mb-3">
+                            <div class="col-md-6">
+                            </div>
+                            <div class="col-md-6">
+                                @using (Html.BeginForm("Indexadminsp", "Product", FormMethod.Get, new { @class = "d-flex justify-content-end" }))
+                                {
+                                    <label class="w-100">
+                                        Tìm kiếm:
+                                        @Html.TextBox("searchString", null, new { @class = "form-control", @placeholder = "Nhập tên hoặc nhãn hiệu" })
+                                    </label>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table table-hover table-bordered" id="sampleTable">
+                    <thead>
+                        <tr>
+                            <th>Mã sản phẩm</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Ảnh</th>
+                            <th>Số lượng</th>
+                            <th>Tình trạng</th>
+                            <th>Giá tiền</th>
+                            <th>Nhãn hiệu</th>
+                            <th>Chức năng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.ProductCode</td>
+                                <td>@item.ProductName</td>
+                                <td>
+                                    <img src="~/Resources/Pictures/Products/@item.Picture" class="card-img-top" />
+                                </td>
+                                <td>
+                                    @if (item.SoLuong >= 0)
+                                    {
+                                        @item.SoLuong
+                                    }
+                                    else
+                                    {
+                                        <p>0</p>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.SoLuong > 0 && item.SoLuong > 50)
+                                    {
+                                        <span class="badge bg-success">Còn hàng</span>
+                                    }
+                                    else if (item.SoLuong > 0 && item.SoLuong <= 50)
+                                    {
+                                        <span class="badge badge-warning">Sắp hết hàng</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Hết hàng</span>
+                                    }
+                                </td>
+                                <td>@string.Format("{0:#,0}", item.UnitPrice) đ</td>
+                                <td>@item.Catalog.CatalogName</td>
+                                <td style="flex-direction: column; display: flex;">
+                                    @if (nvSession.MaChucVu == 2)
+                                    {
+                                        <button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
+                                                onclick="location.href='@Url.Action("Delete", "Product",new { id = item.Id })'">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa"
+                                                onclick="location.href='@Url.Action("Edit", "Product",new { id = item.Id })'">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    }
+
+                                    @if (item.SoLuong > 0)
+                                    {
+                                        <div class="detail__operation">
+                                            <button class="detail__operation-addCart btn btn-order" type="button" title="Order"
+                                                    onclick="location.href='@Url.Action("Themgiohang", "Giohang", new { IdProduct = item.Id, strURL = Request.Url.ToString() })'">
+                                                Thêm vào giỏ hàng
+                                            </button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="detail__operation">
+                                            <button class="detail__operation-addCart btn btn-order" onclick="location.href='@Url.Action("Index", "Home")'">Quay về trang chủ</button>
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                @* Tạo liên kết các trang *@
+                @if (totalPage > 1)
+                {
+                    <div class="MenuTrang pagination">
+                        @Html.PagedListPager(Model, page => Url.Action("Indexadminsp", new { searchString = currentSearch, page = page }),
+                                              new PagedListRenderOptions()
+                                              {
+                                                  LiElementClasses = new[] { "paginate_button page-item page-link" },
+                                                  UlElementClasses = new[] { "pagination" }
+                                              })
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

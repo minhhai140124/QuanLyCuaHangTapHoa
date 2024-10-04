@@ -1,0 +1,145 @@
+﻿@using QuanLyCuaHangTapHoa.Models;
+@using PagedList.Mvc;
+@using QuanLyCuaHangTapHoa.Utils;
+@model PagedList.PagedList<QuanLyCuaHangTapHoa.Models.Product>
+
+@{
+    quantaphoaEntities _db = new quantaphoaEntities();
+    var dscata = _db.Catalogs.ToList();
+    ViewBag.Title = "Danh sách sản phẩm";
+    Layout = "~/Views/Shared/_layoutadmin.cshtml";
+    var currentSearch = ViewBag.searchStr;
+    var currentSort = ViewBag.Sort;
+    var totalPage = ViewBag.totalPage;
+    var dsProduct = ViewBag.products;
+    NhanVien nvSession = (NhanVien)Session["NV"];
+}
+
+<div class="app-title">
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item active"><span><b>Danh sách sản phẩm</b></span></li>
+    </ul>
+    <div id="clock"></div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+            <div class="tile-body">
+                <div class="row element-button">
+                    @if (nvSession.MaChucVu == 2)
+                    {
+                        <div class="col-sm-2">
+                            <span class="btn btn-add btn-sm">
+                                <i class="fas fa-folder-plus"></i> Danh sách danh mục
+                            </span>
+                        </div>
+                        <div class="col-sm-2">
+                            <a class="btn btn-delete print-file btn-sm" href="@Url.Action("Create","Product")">
+                                <i class="fas fa-plus"></i>
+                                Tạo mới sản phẩm
+                            </a>
+                        </div>
+                    }
+                </div>
+                <div class="row" style="align-items:center">
+                    <div class="col-sm-12 col-md-6">
+                        <span>Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)/ @totalPage</span>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="row align-items-center mb-3">
+                            <div class="col-md-6">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-end">
+                                    <label class="w-100">
+                                        Tìm kiếm:
+                                        <input type="text" class="form-control" placeholder="Nhập tên hoặc nhãn hiệu" disabled>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table table-hover table-bordered" id="sampleTable">
+                    <thead>
+                        <tr>
+                            <th>Mã sản phẩm</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Ảnh</th>
+                            <th>Số lượng</th>
+                            <th>Tình trạng</th>
+                            <th>Giá tiền</th>
+                            <th>Nhãn hiệu</th>
+                            <th>Chức năng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.ProductCode</td>
+                                <td>@item.ProductName</td>
+                                <td>
+                                    <img src="~/Resources/Pictures/Products/@item.Picture" class="card-img-top" />
+                                </td>
+                                <td>
+                                    @if (item.SoLuong >= 0)
+                                    {
+                                        @item.SoLuong
+                                    }
+                                    else
+                                    {
+                                        <p>0</p>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.SoLuong > 0 && item.SoLuong > 50)
+                                    {
+                                        <span class="badge bg-success">Còn hàng</span>
+                                    }
+                                    else if (item.SoLuong > 0 && item.SoLuong <= 50)
+                                    {
+                                        <span class="badge badge-warning">Sắp hết hàng</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Hết hàng</span>
+                                    }
+                                </td>
+                                <td>@string.Format("{0:#,0}", item.UnitPrice) đ</td>
+                                <td>@item.Catalog.CatalogName</td>
+                                <td style="flex-direction: column; display: flex;">
+                                    @if (nvSession.MaChucVu == 2)
+                                    {
+                                        <span class="btn btn-primary btn-sm trash" title="Xóa">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </span>
+                                        <span class="btn btn-primary btn-sm edit" title="Sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </span>
+                                    }
+
+                                    @if (item.SoLuong > 0)
+                                    {
+                                        <div class="detail__operation">
+                                            <span class="detail__operation-addCart btn btn-order" title="Order">
+                                                Thêm vào giỏ hàng
+                                            </span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="detail__operation">
+                                            <span class="detail__operation-addCart btn btn-order">Quay về trang chủ</span>
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
