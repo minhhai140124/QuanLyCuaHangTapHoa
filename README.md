@@ -10,4 +10,4 @@ BE: C#, ASP.NET
 DB: SQL Sever
 
 Database_Sql:
-[Database Sql.zip](https://github.com/user-attachments/files/17261259/Database.Sql.zip)
+[Database.Sql.zip](https://github.com/user-attachments/files/17261357/Database.Sql.zip)
