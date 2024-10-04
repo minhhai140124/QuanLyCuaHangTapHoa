@@ -1,32 +1,30 @@
 ﻿using QuanLyCuaHangTapHoa.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Web;
 using System.Web.Mvc;
 
 namespace QuanLyCuaHangTapHoa.Controllers
 {
     public class KhachHangController : Controller
     {
-        private quantaphoaEntities _db = new quantaphoaEntities();
-
+        quantaphoaEntities _db = new quantaphoaEntities();
         // GET: KhachHang
-        public ActionResult Index()
+        public ActionResult Index(string searchStr)
         {
+            NhanVien nv = (NhanVien)Session["NV"];
             var dsKhachHang = _db.KhachHangs.ToList();
-            return View(dsKhachHang);
+
+
+            return View();
         }
 
-        public ActionResult Detail(int? id)
-        {
-            if (id == null)
-            {
-                return HttpNotFound();
-            }
-            KhachHang khachhang = _db.KhachHangs.Find(id);
-            if (khachhang == null)
-            {
-                return HttpNotFound();
-            }
-            return View(khachhang);
-        }
+        
+       
+        
     }
 }

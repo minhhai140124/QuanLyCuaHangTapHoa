@@ -336,13 +336,10 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\OrderController.cs" />
-    <Compile Include="Controllers\GiohangController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\KhachHangController.cs" />
     <Compile Include="Controllers\NhanVienController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
-    <Compile Include="Controllers\ThongKeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -624,17 +621,10 @@
     <Content Include="Views\Product\Create.cshtml" />
     <Content Include="Views\Home\Indexadmin.cshtml" />
     <Content Include="Views\KhachHang\Index.cshtml" />
-    <Content Include="Views\KhachHang\Detail.cshtml" />
-    <Content Include="Views\NhanVien\Index.cshtml" />
-    <Content Include="Views\NhanVien\Delete.cshtml" />
     <Content Include="Views\NhanVien\Create.cshtml" />
     <Content Include="Views\NhanVien\Detail.cshtml" />
     <Content Include="Views\NhanVien\Edit.cshtml" />
-    <Content Include="Views\ThongKe\ThongKeDoanhThu.cshtml" />
-    <Content Include="Views\ThongKe\TheoTime.cshtml" />
-    <Content Include="Views\ThongKe\Index.cshtml" />
-    <Content Include="Views\Order\Index.cshtml" />
-    <Content Include="Views\GioHang\Index.cshtml" />
+    <Content Include="Views\NhanVien\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
