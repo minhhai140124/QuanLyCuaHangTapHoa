@@ -11,3 +11,6 @@ DB: SQL Sever
 
 Database_Sql:
 [Database.Sql.zip](https://github.com/user-attachments/files/17261357/Database.Sql.zip)
+
+Sprint 1 preview: 
+[Nhom08_QuanLyCuaHangTapHoa.xlsx](https://github.com/user-attachments/files/17261451/Nhom08_QuanLyCuaHangTapHoa.xlsx)
