@@ -19,10 +19,35 @@ namespace QuanLyCuaHangTapHoa.Controllers
             NhanVien nv = (NhanVien)Session["NV"];
             var dsKhachHang = _db.KhachHangs.ToList();
 
-
+            //Tìm kiếm khách hàng trong quản lý khách hàng bằng email
+            if (!String.IsNullOrEmpty(searchStr))
+            {
+                searchStr = searchStr.ToLower();
+                dsKhachHang = dsKhachHang.Where(s => s.Email.ToLower().Contains(searchStr)).ToList();
+                ViewBag.dsKh = dsKhachHang;
+            }
+            else
+            {
+                ViewBag.dsKH = dsKhachHang;
+            }
             return View();
         }
 
+
+        //Thông tin khách hàng
+        public ActionResult Detail(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            KhachHang khachhang = _db.KhachHangs.Find(id);
+            if (khachhang == null)
+            {
+                return HttpNotFound();
+            }
+            return View(khachhang);
+        }
         
        
         
