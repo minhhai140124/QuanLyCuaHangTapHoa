@@ -50,12 +50,13 @@
                             <div class="col-md-6">
                             </div>
                             <div class="col-md-6">
-                                <div class="d-flex justify-content-end">
+                                @using (Html.BeginForm("Indexadminsp", "Product", FormMethod.Get, new { @class = "d-flex justify-content-end" }))
+                                {
                                     <label class="w-100">
                                         Tìm kiếm:
-                                        <input type="text" class="form-control" placeholder="Nhập tên hoặc nhãn hiệu" disabled>
+                                        @Html.TextBox("searchString", null, new { @class = "form-control", @placeholder = "Nhập tên hoặc nhãn hiệu" })
                                     </label>
-                                </div>
+                                }
                             </div>
                         </div>
                     </div>
