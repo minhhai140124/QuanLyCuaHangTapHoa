@@ -1,0 +1,276 @@
+﻿@using QuanLyCuaHangTapHoa.Models
+@model List<Giohang>
+@{
+    ViewBag.Title = "Giỏ hàng";
+    Layout = "";
+    Layout = "~/Views/Shared/_layoutadmin.cshtml";
+    quantaphoaEntities _db = new quantaphoaEntities();
+}
+
+<div class="cart-container">
+    <div class="cart-wrapper">
+        <div class="cart-header">
+            <div class="cart-header-item flex-6">Sản phẩm</div>
+            <div class="cart-header-item flex-2">Đơn giá</div>
+            <div class="cart-header-item flex-1">Số lượng</div>
+            <div class="cart-header-item flex-2">Thành tiền</div>
+            <div class="cart-header-item flex-1">Thao tác</div>
+        </div>
+
+        <div class="cart-body">
+            @if (Session["Giohang"] != null && Model.Count != 0)
+            {
+                foreach (var item in Model)
+                {
+                    <div class="cart-item">
+                        <div class="cart-product flex-6">
+                            <div class="product-image">
+                                <img src="~/Resources/Pictures/Products/@item.Picture" alt="@item.ProductName" />
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-name">@item.ProductName</h3>
+                            </div>
+                        </div>
+                        <div class="cart-price flex-2">@string.Format("{0:#,0}", item.DonGia) ₫</div>
+                        <div class="cart-quantity flex-1">
+                            <input type="number" value="@item.SoLuong" readonly class="quantity-input" />
+                        </div>
+                        <div class="cart-subtotal flex-2">@string.Format("{0:#,0}", item.Price) ₫</div>
+                        <div class="cart-actions flex-1">
+                            <button class="btn-action btn-remove" disabled>Xóa</button>
+                        </div>
+                    </div>
+                }
+
+                <div class="cart-footer">
+                    <div class="cart-summary">
+                        <div class="summary-item">
+                            <span>Tổng số lượng:</span>
+                            <span class="summary-value">@ViewBag.Tongsoluong sản phẩm</span>
+                        </div>
+                        <div class="summary-item total">
+                            <span>Tổng tiền:</span>
+                            <span class="summary-value">@String.Format("{0:#,0}", ViewBag.Tongtien) ₫</span>
+                        </div>
+                    </div>
+                    <div class="cart-buttons">
+                        <button class="btn-action btn-clear" disabled>Xóa giỏ hàng</button>
+                        <button class="btn-action btn-checkout" disabled>Đặt hàng</button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="cart-empty">
+                    <div class="empty-message">Chưa có sản phẩm nào trong giỏ hàng</div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .cart-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .cart-wrapper {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .cart-header {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px 8px 0 0;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .cart-header-item {
+        padding: 0.5rem;
+    }
+
+    .flex-6 {
+        flex: 6;
+    }
+
+    .flex-2 {
+        flex: 2;
+    }
+
+    .flex-1 {
+        flex: 1;
+    }
+
+    .cart-body {
+        padding: 1rem;
+    }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .cart-product {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .product-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .product-name {
+        font-size: 1rem;
+        color: #333;
+        margin: 0;
+    }
+
+    .cart-price,
+    .cart-subtotal {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .quantity-input {
+        width: 60px;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        text-align: center;
+        background-color: #f8f9fa;
+    }
+
+    .btn-action {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: not-allowed;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-remove {
+        background: #ff4757;
+        color: white;
+        opacity: 0.7;
+    }
+
+    .cart-footer {
+        margin-top: 2rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 0 0 8px 8px;
+    }
+
+    .cart-summary {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        font-size: 1rem;
+    }
+
+        .summary-item.total {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+    .cart-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+    }
+
+    .btn-clear {
+        background: #e74c3c;
+        color: white;
+        opacity: 0.7;
+    }
+
+    .btn-checkout {
+        background: #2ecc71;
+        color: white;
+        opacity: 0.7;
+    }
+
+    .cart-empty {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 3rem;
+    }
+
+    .empty-message {
+        font-size: 1.1rem;
+        color: #666;
+    }
+
+    /* Responsive Design */
+    @@media screen and (max-width: 768px) {
+        .cart-header {
+            display: none;
+        }
+
+        .cart-item {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .cart-product {
+            width: 100%;
+        }
+
+        .cart-price,
+        .cart-quantity,
+        .cart-subtotal,
+        .cart-actions {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .cart-price::before {
+                content: "Đơn giá:";
+                font-weight: normal;
+            }
+
+            .cart-quantity::before {
+                content: "Số lượng:";
+                font-weight: normal;
+            }
+
+            .cart-subtotal::before {
+                content: "Thành tiền:";
+                font-weight: normal;
+            }
+    }
+</style>

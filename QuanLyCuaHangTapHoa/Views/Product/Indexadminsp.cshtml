@@ -17,7 +17,7 @@
 
 <div class="app-title">
     <ul class="app-breadcrumb breadcrumb side">
-        <li class="breadcrumb-item active"><span><b>Danh sách sản phẩm</b></span></li>
+        <li class="breadcrumb-item active"><a href="#"><b>Danh sách sản phẩm</b></a></li>
     </ul>
     <div id="clock"></div>
 </div>
@@ -29,9 +29,9 @@
                     @if (nvSession.MaChucVu == 2)
                     {
                         <div class="col-sm-2">
-                            <span class="btn btn-add btn-sm">
+                            <a class="btn btn-add btn-sm" href="@Url.Action("Index","Catalog")">
                                 <i class="fas fa-folder-plus"></i> Danh sách danh mục
-                            </span>
+                            </a>
                         </div>
                         <div class="col-sm-2">
                             <a class="btn btn-delete print-file btn-sm" href="@Url.Action("Create","Product")">
@@ -40,6 +40,26 @@
                             </a>
                         </div>
                     }
+                    <div class="col-sm-2">
+                        <a class="btn btn-warning btn-sm" href="@Url.Action("Indexadminsp", "Product", new { sort = "pre-sold", searchString = ViewBag.searchStr, category = ViewBag.category })">
+                            Sắp hết hàng
+                        </a>
+                    </div>
+                    <div class="col-sm-2">
+                        <a class="btn btn-danger btn-sm" href="@Url.Action("Indexadminsp", "Product", new { sort = "sold", searchString = ViewBag.searchStr, category = ViewBag.category })">
+                            Hết hàng
+                        </a>
+                    </div>
+                    <div class="col-sm-2">
+                        <a class="btn btn-success btn-sm" href="@Url.Action("Indexadminsp", "Product", new { sort = "available", searchString = ViewBag.searchStr, category = ViewBag.category })">
+                            Còn hàng
+                        </a>
+                    </div>
+                    <div class="col-sm-2">
+                        <a class="btn btn-light btn-sm" href="@Url.Action("Indexadminsp", "Product", new { searchString = ViewBag.searchStr, category = ViewBag.category })">
+                            Mặc định
+                        </a>
+                    </div>
                 </div>
                 <div class="row" style="align-items:center">
                     <div class="col-sm-12 col-md-6">
@@ -113,26 +133,29 @@
                                 <td style="flex-direction: column; display: flex;">
                                     @if (nvSession.MaChucVu == 2)
                                     {
-                                        <span class="btn btn-primary btn-sm trash" title="Xóa">
+                                        <button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
+                                                onclick="location.href='@Url.Action("Delete", "Product",new { id = item.Id })'">
                                             <i class="fas fa-trash-alt"></i>
-                                        </span>
-                                        <span class="btn btn-primary btn-sm edit" title="Sửa">
+                                        </button>
+                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa"
+                                                onclick="location.href='@Url.Action("Edit", "Product",new { id = item.Id })'">
                                             <i class="fas fa-edit"></i>
-                                        </span>
+                                        </button>
                                     }
 
                                     @if (item.SoLuong > 0)
                                     {
                                         <div class="detail__operation">
-                                            <span class="detail__operation-addCart btn btn-order" title="Order">
+                                            <button class="detail__operation-addCart btn btn-order" type="button" title="Order"
+                                                    onclick="location.href='@Url.Action("Themgiohang", "Giohang", new { IdProduct = item.Id, strURL = Request.Url.ToString() })'">
                                                 Thêm vào giỏ hàng
-                                            </span>
+                                            </button>
                                         </div>
                                     }
                                     else
                                     {
                                         <div class="detail__operation">
-                                            <span class="detail__operation-addCart btn btn-order">Quay về trang chủ</span>
+                                            <button class="detail__operation-addCart btn btn-order" onclick="location.href='@Url.Action("Index", "Home")'">Quay về trang chủ</button>
                                         </div>
                                     }
                                 </td>
@@ -140,6 +163,19 @@
                         }
                     </tbody>
                 </table>
+
+                @* Tạo liên kết các trang *@
+                @if (totalPage > 1)
+                {
+                    <div class="MenuTrang pagination">
+                        @Html.PagedListPager(Model, page => Url.Action("Indexadminsp", new { searchString = currentSearch, page = page }),
+                                              new PagedListRenderOptions()
+                                              {
+                                                  LiElementClasses = new[] { "paginate_button page-item page-link" },
+                                                  UlElementClasses = new[] { "pagination" }
+                                              })
+                    </div>
+                }
             </div>
         </div>
     </div>

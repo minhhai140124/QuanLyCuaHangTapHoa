@@ -117,6 +117,81 @@ namespace QuanLyCuaHangTapHoa.Controllers
             return View(nv);
 
         }
-       
+        //Xóa nhân viên
+
+        public ActionResult Delete(int? id)
+
+        {
+
+            if (id == null)
+
+            {
+
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            }
+
+            NhanVien nhanvien = _db.NhanViens.Find(id);
+
+            if (nhanvien == null)
+
+            {
+
+                return HttpNotFound();
+
+            }
+
+            return View(nhanvien);
+
+        }
+
+        [HttpPost, ActionName("Delete")]
+
+        [ValidateAntiForgeryToken]
+
+        public ActionResult DeleteConfirmed(int Id)
+
+        {
+
+            NhanVien nhanvien = _db.NhanViens.Find(Id);
+
+            _db.NhanViens.Remove(nhanvien);
+
+            _db.SaveChanges();
+
+            return RedirectToAction("Index");
+
+        }
+
+
+
+        // Xem chi tiết Nhân viên
+
+        public ActionResult Detail(int? id)
+
+        {
+
+            if (id == null)
+
+            {
+
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            }
+
+            NhanVien nhanvien = _db.NhanViens.Find(id);
+
+            if (nhanvien == null)
+
+            {
+
+                return HttpNotFound();
+
+            }
+
+            return View(nhanvien);
+
+        }
+
     }
 }
