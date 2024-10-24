@@ -33,5 +33,16 @@
         public virtual Catalog Catalog { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Order_Detail> Order_Detail { get; set; }
+
+        [NotMapped]
+        public string FullPicturePath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Picture))
+                    return null;
+                return $"/Resources/Pictures/Products/{Picture}";
+            }
+        }
     }
 }
