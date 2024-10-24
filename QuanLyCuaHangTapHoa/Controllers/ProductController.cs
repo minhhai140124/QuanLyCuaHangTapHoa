@@ -104,6 +104,72 @@ namespace QuanLyCuaHangTapHoa.Controllers
 
 
         }
-        
+        //ProductController
+        //Sửa Sản phẩm
+        public ActionResult Edit(int id)
+        {
+            Product product = _db.Products.Find(id);
+            ViewBag.CatalogId = new SelectList(_db.Catalogs, "ID", "CatalogName", product.CatalogId);
+            return View(product);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Product sanPham)
+        {
+            var pr = _db.Products.FirstOrDefault(p => p.Id == sanPham.Id);
+            if (ModelState.IsValid)
+            {
+                if (sanPham.ProductThumbnailStream != null)
+                {
+                    // Lấy đường dẫn và lưu trữ ảnh
+                    string extension = Path.GetExtension(sanPham.ProductThumbnailStream.FileName).ToLower();
+                    string modifiedFileName = $"{sanPham.ProductName.ToLower()}_{DateTime.Now.ToString("hhmmss_ddMMyyyy")}{extension}";
+                    string path = Path.Combine(Server.MapPath("~/Resources/Pictures/Products/"), modifiedFileName);
+                    sanPham.ProductThumbnailStream.SaveAs(path);
+                    pr.Picture = modifiedFileName; // Cập nhật đường dẫn ảnh trong database
+                }
+
+                // Cập nhật thông tin sản phẩm
+                pr.CatalogId = sanPham.CatalogId;
+                pr.ProductName = sanPham.ProductName;
+                pr.PriceOld = sanPham.PriceOld;
+                pr.UnitPrice = (sanPham.ProductSale != null) ? (sanPham.PriceOld - (sanPham.PriceOld * int.Parse(sanPham.ProductSale)) / 100) : sanPham.PriceOld;
+                pr.ProductCode = sanPham.ProductCode;
+                pr.ProductSale = sanPham.ProductSale;
+                pr.SoLuong = sanPham.SoLuong;
+                pr.NgayNhapHang = DateTime.Now;
+
+                _db.Entry(pr).State = EntityState.Modified;
+                _db.SaveChanges();
+                return RedirectToAction("Indexadminsp");
+            }
+            ViewBag.CatalogId = new SelectList(_db.Catalogs, "ID", "CatalogName", sanPham.CatalogId);
+            return View(sanPham);
+        }
+        //Hàm xóa sản phẩm 
+        [HttpGet]
+        public ActionResult Delete(int id)
+        {
+            Product pro = _db.Products.FirstOrDefault(p => p.Id == id);
+            if (pro != null)
+                return View(pro);
+            else
+                return RedirectToAction("Indexadminsp");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(string id)
+        {
+            int i = int.Parse(id);
+            var productDB = _db.Products.FirstOrDefault(p => p.Id == i);
+            if (productDB != null)
+            {
+                _db.Products.Remove(productDB); _db.SaveChanges();
+            }
+            return RedirectToAction("Indexadminsp");
+        }
+
+
     }
 }
